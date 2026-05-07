@@ -1,4 +1,7 @@
 # Two Factor Totp
+
+Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.
+
 [![Build Status](https://drone.owncloud.com/api/badges/owncloud/twofactor_totp/status.svg?branch=master)](https://drone.owncloud.com/owncloud/twofactor_totp)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=owncloud_twofactor_totp&metric=alert_status)](https://sonarcloud.io/dashboard?id=owncloud_twofactor_totp)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=owncloud_twofactor_totp&metric=security_rating)](https://sonarcloud.io/dashboard?id=owncloud_twofactor_totp)

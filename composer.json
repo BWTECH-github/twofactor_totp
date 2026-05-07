@@ -1,17 +1,21 @@
 {
-  "name": "owncloud/twofactor_totp",
+  "name": "bwtech/twofactor_totp",
+  "description": "Second factor TOTP provider for owncloud.online, modified by BW-Tech GmbH for PHP 8.4 compatibility.",
+  "homepage": "https://github.com/GrossLukas/twofactor_totp",
+  "license": "AGPL-3.0-only",
+  "modified-by": "BW-Tech GmbH",
   "config": {
     "platform": {
-      "php": "8.3"
+      "php": "8.4"
     },
     "allow-plugins": {
       "bamarni/composer-bin-plugin": true
     }
   },
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4",
     "christian-riesen/otp": "^2.6",
-    "bacon/bacon-qr-code": "^2.0"
+    "bacon/bacon-qr-code": "^3.1"
   },
   "require-dev": {
     "bamarni/composer-bin-plugin": "^1.8",
@@ -22,5 +26,9 @@
     "bamarni-bin": {
       "bin-links": false
     }
+  },
+  "support": {
+    "issues": "https://github.com/GrossLukas/twofactor_totp/issues",
+    "source": "https://github.com/GrossLukas/twofactor_totp"
   }
 }
