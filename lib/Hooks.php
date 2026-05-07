@@ -2,6 +2,7 @@
 
 /**
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
+ * Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.
  *
  * Two-factor TOTP
  *
@@ -22,6 +23,7 @@
 namespace OCA\TwoFactor_Totp;
 
 use OCA\TwoFactor_Totp\Db\TotpSecretMapper;
+use OCP\App\ManagerEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -59,6 +61,12 @@ class Hooks {
 				$this->afterDeleteUser($event->getArgument('uid'));
 			}
 		);
+		$this->eventDispatcher->addListener(
+			ManagerEvent::EVENT_APP_DISABLE,
+			function (ManagerEvent $event) {
+				$this->afterDisableApp($event);
+			}
+		);
 	}
 
 	/**
@@ -66,5 +74,18 @@ class Hooks {
 	 */
 	public function afterDeleteUser($uid) {
 		$this->secretMapper->deleteSecretsByUserId($uid);
+	}
+
+	/**
+	 * Reset every TOTP registration when this provider app is disabled.
+	 *
+	 * @param ManagerEvent $event
+	 */
+	public function afterDisableApp(ManagerEvent $event) {
+		if ($event->getAppID() !== 'twofactor_totp') {
+			return;
+		}
+
+		$this->secretMapper->deleteAllSecrets();
 	}
 }

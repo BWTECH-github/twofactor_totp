@@ -1,0 +1,35 @@
+/**
+ * Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.
+ */
+#twofactor-totp-admin .totp-admin-user-picker {
+	max-width: 1180px;
+}
+
+#twofactor-totp-admin label {
+	display: block;
+	margin-bottom: 6px;
+	font-weight: 600;
+}
+
+#twofactor-totp-admin #totp-admin-user-search {
+	width: 520px;
+	max-width: 100%;
+}
+
+#twofactor-totp-admin #totp-admin-user-select {
+	width: 100%;
+	min-width: 520px;
+	max-width: 1100px;
+	height: 430px;
+	resize: vertical;
+}
+
+#twofactor-totp-admin #totp-admin-reset-all-button {
+	margin-left: 8px;
+}
+
+#twofactor-totp-admin #totp-admin-reset-message {
+	display: inline-block;
+	margin-left: 10px;
+	vertical-align: middle;
+}

@@ -3,6 +3,7 @@
 /**
  * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
+ * Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.
  *
  * Two-factor TOTP
  *
@@ -34,6 +35,26 @@ return [
 		[
 			'name' => 'settings#verifyNewSecret',
 			'url' => '/settings/verifyNewSecret',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'admin#resetUserTotp',
+			'url' => '/admin/reset-user',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'admin#searchUsers',
+			'url' => '/admin/users',
+			'verb' => 'GET'
+		],
+		[
+			'name' => 'admin#resetUsersTotp',
+			'url' => '/admin/reset-users',
+			'verb' => 'POST'
+		],
+		[
+			'name' => 'admin#resetAllTotp',
+			'url' => '/admin/reset-all',
 			'verb' => 'POST'
 		],
 	],

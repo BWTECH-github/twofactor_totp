@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
+ * Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.
  *
  * Two-factor TOTP
  *
@@ -18,17 +19,18 @@
  *
  */
 
-namespace OCA\Twofactor_Totp\Tests;
+namespace OCA\TwoFactor_Totp\Tests;
 
 use OCA\TwoFactor_Totp\Db\TotpSecretMapper;
-use OCA\Twofactor_Totp\Hooks;
+use OCA\TwoFactor_Totp\Hooks;
+use OCP\App\ManagerEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Test\TestCase;
 
 /**
  * Class HooksTest
  *
- * @package OCA\Twofactor_Totp\Tests
+ * @package OCA\TwoFactor_Totp\Tests
  */
 class HooksTest extends TestCase {
 	/**
@@ -58,7 +60,7 @@ class HooksTest extends TestCase {
 	}
 
 	public function testRegister() {
-		$this->eventDispatcherMock->expects($this->exactly(1))
+		$this->eventDispatcherMock->expects($this->exactly(2))
 			->method('addListener');
 		$this->hooks->register();
 	}
@@ -68,5 +70,17 @@ class HooksTest extends TestCase {
 			->method('deleteSecretsByUserId')
 			->with('user1');
 		$this->hooks->afterDeleteUser('user1');
+	}
+
+	public function testAfterDisableAppDeletesAllSecrets() {
+		$this->secretMapperMock->expects($this->once())
+			->method('deleteAllSecrets');
+		$this->hooks->afterDisableApp(new ManagerEvent(ManagerEvent::EVENT_APP_DISABLE, 'twofactor_totp'));
+	}
+
+	public function testAfterDisableAppIgnoresOtherApps() {
+		$this->secretMapperMock->expects($this->never())
+			->method('deleteAllSecrets');
+		$this->hooks->afterDisableApp(new ManagerEvent(ManagerEvent::EVENT_APP_DISABLE, 'files'));
 	}
 }

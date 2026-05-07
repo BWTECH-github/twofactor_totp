@@ -1,4 +1,5 @@
 <?php
+// Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.
 /**
  * @author Sıla Boyraz <boyrazs15@itu.edu.tr>
  *
@@ -21,6 +22,7 @@
 
 namespace OCA\TwoFactor_Totp\Tests\Command;
 
+use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 use Test\Traits\UserTrait;
 use OCA\TwoFactor_Totp\Command\DeleteRedundantSecretsCommand;
@@ -43,6 +45,12 @@ class DeleteRedundantSecretsCommandTest extends TestCase {
 	/** @var CommandTester */
 	private $commandTester;
 
+	/** @var TotpSecretMapper */
+	private $mapper;
+
+	/** @var array */
+	private $originalSecrets = [];
+
 	/** @var string  */
 	private $dbTable = 'twofactor_totp_secrets';
 
@@ -50,23 +58,26 @@ class DeleteRedundantSecretsCommandTest extends TestCase {
 		parent::setUp();
 
 		$this->db = \OC::$server->getDatabaseConnection();
-		$mapper = new TotpSecretMapper($this->db);
-		$command = new DeleteRedundantSecretsCommand($mapper, \OC::$server->getUserManager());
+		$this->mapper = new TotpSecretMapper($this->db);
+		$this->originalSecrets = $this->mapper->getAllSecrets();
+		$this->mapper->deleteAllSecrets();
+
+		$command = new DeleteRedundantSecretsCommand($this->mapper, \OC::$server->getUserManager());
 		$this->commandTester = new CommandTester($command);
 
 		$this->createUser('user1');
-		$mapper->insert(TotpSecret::fromParams([
+		$this->mapper->insert(TotpSecret::fromParams([
 			'userId' => 'user1',
 			'secret' => 'test',
 			'verified' => false
 		]));
 		$this->createUser('user2');
-		$mapper->insert(TotpSecret::fromParams([
+		$this->mapper->insert(TotpSecret::fromParams([
 			'userId' => 'user2',
 			'secret' => 'test',
 			'verified' => false
 		]));
-		$mapper->insert(TotpSecret::fromParams([
+		$this->mapper->insert(TotpSecret::fromParams([
 			'userId' => 'nonexisting_user',
 			'secret' => 'test',
 			'verified' => false
@@ -74,9 +85,11 @@ class DeleteRedundantSecretsCommandTest extends TestCase {
 	}
 
 	protected function tearDown(): void {
+		$this->mapper->deleteAllSecrets();
+		foreach ($this->originalSecrets as $secret) {
+			$this->restoreSecret($secret);
+		}
 		parent::tearDown();
-		$query = $this->db->getQueryBuilder()->delete($this->dbTable);
-		$query->execute();
 	}
 
 	public function testCommandInput() {
@@ -84,5 +97,20 @@ class DeleteRedundantSecretsCommandTest extends TestCase {
 		$output = $this->commandTester->getDisplay();
 		$this->assertStringContainsString("The redundant secret of nonexisting_user is deleted.", $output);
 		$this->assertStringContainsString("1 redundant secrets are deleted", $output);
+	}
+
+	/**
+	 * @param array $secret
+	 */
+	private function restoreSecret(array $secret) {
+		$qb = $this->db->getQueryBuilder();
+		$qb->insert($this->dbTable)
+			->values([
+				'user_id' => $qb->createNamedParameter($secret['user_id']),
+				'secret' => $qb->createNamedParameter($secret['secret']),
+				'verified' => $qb->createNamedParameter((bool)$secret['verified'], IQueryBuilder::PARAM_BOOL),
+				'last_validated_key' => $qb->createNamedParameter($secret['last_validated_key']),
+			])
+			->execute();
 	}
 }
