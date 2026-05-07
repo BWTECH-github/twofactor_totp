@@ -25,6 +25,7 @@ Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.</descrip
 
 	<settings>
 		<personal>OCA\TwoFactor_Totp\Settings\PersonalPanel</personal>
+		<admin>OCA\TwoFactor_Totp\Settings\AdminPanel</admin>
 	</settings>
 	<commands>
 		<command>OCA\TwoFactor_Totp\Command\SetSecretVerificationStatusCommand</command>
