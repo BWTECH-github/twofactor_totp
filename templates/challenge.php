@@ -5,12 +5,13 @@ script('core', 'login');
 <?php if(!$_['isConfigured']): ?>
 <div class="grouptop" style="align-items:center;">
 	<p class="info"><?php p($l->t('Scan the QR code below with your TOTP app and enter the code')); ?></p>
-	<img src="<?php p($_['qr']); ?>" />
+	<img src="<?php p($_['qr']); ?>" alt="<?php p($l->t('QR code for TOTP authenticator setup')); ?>" />
 </div>
 <?php endif; ?>
 <form method="POST" name="login">
 	<div class="grouptop">
-		<input type="text" name="challenge" required="required" autofocus autocomplete="off" autocapitalize="off">
+		<label for="challenge" class="hidden-visually"><?php p($l->t('Authentication code')); ?></label>
+		<input type="text" id="challenge" name="challenge" required="required" autofocus autocomplete="off" autocapitalize="off">
 	</div>
     <div class="submit-wrap">
         <button type="submit" id="submit" class="login-button">
