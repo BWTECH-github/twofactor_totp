@@ -15,7 +15,7 @@
         + '    <span>' + t('twofactor_totp', 'This is your new TOTP secret:') + ' {{secret}}</span>'
         + '</div>'
         + '<div>'
-        + '    <span>' + t('twofactor_totp', 'Scan this QR code with your TOTP app') + '<span><br>'
+        + '    <span>' + t('twofactor_totp', 'Scan this QR code with your TOTP app') + '</span><br>'
         + '    <img src="{{qr}}" alt="' + t('twofactor_totp', 'QR code for TOTP authenticator setup') + '">'
         + '</div>'
         + '<div>'
