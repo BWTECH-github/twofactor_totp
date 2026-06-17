@@ -1,4 +1,8 @@
 <?php
+/**
+ * modified by BW-Tech GmbH
+ */
+
 script('core', 'login');
 ?>
 
@@ -6,6 +10,10 @@ script('core', 'login');
 <div class="grouptop" style="align-items:center;">
 	<p class="info"><?php p($l->t('Scan the QR code below with your TOTP app and enter the code')); ?></p>
 	<img src="<?php p($_['qr']); ?>" alt="<?php p($l->t('QR code for TOTP authenticator setup')); ?>" />
+	<?php if(!empty($_['secret'])): ?>
+		<p class="info"><?php p($l->t('This is your new TOTP secret:')); ?></p>
+		<code style="display:block; padding:10px; word-break:break-all; background:rgba(255,255,255,.85); color:#1f2933; border-radius:6px;"><?php p($_['secret']); ?></code>
+	<?php endif; ?>
 </div>
 <?php endif; ?>
 <form method="POST" name="login">

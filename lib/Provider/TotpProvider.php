@@ -3,6 +3,7 @@
 /**
  * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Semih Serhat Karakaya <karakayasemi@itu.edu.tr>
+ * modified by BW-Tech GmbH
  *
  * Two-factor TOTP
  *
@@ -102,6 +103,7 @@ class TotpProvider implements IProvider {
 
 		if (!$verified) {
 			$tmpl->assign('isConfigured', false);
+			$tmpl->assign('secret', $secret);
 			$tmpl->assign('qr', $this->otpGen->generateOtpQR($user, $secret));
 		} else {
 			$tmpl->assign('isConfigured', true);
