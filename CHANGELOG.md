@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased] - xxxx-xx-xx
 
+## [0.10.1] - 2026-07-31
+
+### Fixed
+- No longer bundles `paragonie/constant_time_encoding`, which the server already
+  provides (at a newer major, v3). Because a bundled `vendor/autoload.php` is
+  prepended ahead of the server's autoloader, shipping the older v2 copy could
+  shadow the server's v3 and break Base32 handling on a future server bump. The
+  package is now declared via `composer replace`, so the app always uses the
+  server's copy. Verified: TOTP secret generation and code verification
+  (`christian-riesen/otp`) work unchanged against the server's constant_time v3.
+
 ## [0.9.0] - 2024-01-09
 
 - [#311](https://github.com/owncloud/twofactor_totp/pull/311) - feat: allow occ admin to delete user's secrets

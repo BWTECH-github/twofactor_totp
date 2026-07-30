@@ -17,6 +17,9 @@
     "christian-riesen/otp": "^2.6",
     "bacon/bacon-qr-code": "^3.1"
   },
+  "replace": {
+    "paragonie/constant_time_encoding": "2.8.2"
+  },
   "require-dev": {
     "bamarni/composer-bin-plugin": "^1.8",
     "khanamiryan/qrcode-detector-decoder": "1.0.5.2",
