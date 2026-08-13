@@ -10,7 +10,7 @@ This extension provides the most simple way to add a second factor to user login
 Modified by BW-Tech GmbH for owncloud.online and PHP 8.4 compatibility.</description>
 	<licence>AGPL</licence>
 	<author>ownCloud contributors, modified by BW-Tech GmbH</author>
-	<version>0.10.1</version>
+	<version>0.10.2</version>
 	<namespace>TwoFactor_Totp</namespace>
 	<category>security</category>
 	<documentation>
