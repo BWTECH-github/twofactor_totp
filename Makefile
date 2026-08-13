@@ -5,7 +5,10 @@ COMPOSER_BIN := $(shell command -v composer 2> /dev/null)
 
 app_name=$(notdir $(CURDIR))
 doc_files=AUTHORS.md CHANGELOG.md COPYING README.md
-src_dirs=appinfo js l10n lib templates vendor
+# css gehoert ins Paket: AdminPanel::getPanel() ruft
+# Util::addStyle('twofactor_totp', 'admin') auf; ohne css/admin.css laedt
+# die Verwaltungsseite ein Stylesheet, das es im Paket nicht gibt.
+src_dirs=appinfo css js l10n lib templates vendor
 all_src=$(src_dirs) $(doc_files)
 build_dir=$(CURDIR)/build
 dist_dir=$(build_dir)/dist
