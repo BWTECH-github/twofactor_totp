@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [0.10.4] - 2026-09-26
+
+### Fixed
+
+- Umzug alter Datenbanken: Konten, die TOTP unter 0.4.3 oder älter (ownCloud
+  9.1/10.0) eingerichtet hatten, verloren beim Update ihren zweiten Faktor
+  stillschweigend. Die Spalte `verified` kam mit 0.4.4 und steht für alle
+  vorhandenen Zeilen auf false; seitdem gilt nur ein bestätigter Schlüssel. Der
+  neue Reparaturschritt `VerifyLegacySecrets` (post-migration) markiert diese
+  Schlüssel als bestätigt, solange `installed_version` noch vor 0.4.4 liegt, und
+  stellt damit das Verhalten von 0.4.3 wieder her. Unbestätigte Schlüssel aus
+  0.4.4 und neuer bleiben unbestätigt, ein zweiter Lauf tut nichts. Die Anzahl
+  steht samt Befehl zum Zurücknehmen im Serverprotokoll.
+
 ## [0.10.3] - 2026-08-13
 
 ### Fixed

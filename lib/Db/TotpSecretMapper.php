@@ -67,6 +67,23 @@ class TotpSecretMapper extends Mapper {
 	}
 
 	/**
+	 * Markiert alle unbestätigten Schlüssel als bestätigt. NULL zählt als
+	 * unbestätigt: Die Spalte ist nicht NOT NULL.
+	 *
+	 * @return int the number of secrets marked as verified
+	 */
+	public function markUnverifiedSecretsAsVerified(): int {
+		$qb = $this->db->getQueryBuilder();
+		return (int)$qb->update('twofactor_totp_secrets')
+			->set('verified', $qb->createNamedParameter(true, IQueryBuilder::PARAM_BOOL))
+			->where($qb->expr()->orX(
+				$qb->expr()->eq('verified', $qb->createNamedParameter(false, IQueryBuilder::PARAM_BOOL)),
+				$qb->expr()->isNull('verified')
+			))
+			->execute();
+	}
+
+	/**
 	 * @param string $uid
 	 * @return int the number of deleted secrets
 	 */

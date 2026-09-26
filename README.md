@@ -86,6 +86,30 @@ sudo -u www-data php8.4 occ twofactor_totp:set-secret-verification-status true -
 sudo -u www-data php8.4 occ twofactor_totp:delete-redundant-secret
 ```
 
+## Umzug von einer älteren Instanz
+
+Die Schlüssel stehen in `oc_twofactor_totp_secrets` und werden nach einem Umzug
+der Datenbank weiter gelesen. Sie sind mit dem `secret` aus der `config.php`
+verschlüsselt — die alte `config.php` (mindestens `secret`) muss also mit
+umziehen, sonst passt kein Code mehr.
+
+Kommt die Datenbank von TOTP 0.4.3 oder älter (ownCloud 9.1 und 10.0), gab es
+dort noch keine Bestätigung: Wer einen Schlüssel hatte, wurde nach dem Code
+gefragt. Seit 0.4.4 gilt nur ein bestätigter Schlüssel, und das Update legt die
+Spalte dafür mit „unbestätigt" an. Damit diese Konten ihren zweiten Faktor nicht
+stillschweigend verlieren, markiert der Reparaturschritt `VerifyLegacySecrets`
+beim Update ihre Schlüssel als bestätigt und schreibt die Anzahl ins
+Serverprotokoll. Wer das für ein Konto nicht will:
+
+```bash
+sudo -u www-data php8.4 occ twofactor_totp:set-secret-verification-status false --uid alice
+```
+
+Aktualisiert wird die App wie jede andere nur, wenn sie eingeschaltet ist. War
+sie in der alten Instanz aus und wird erst nach dem Umzug eingeschaltet, läuft
+der Schritt beim nächsten `occ upgrade` — auch dann werden die alten Schlüssel
+wieder scharf, so wie früher beim Einschalten der App.
+
 ## Fehlersuche
 
 | Symptom | Ursache | Abhilfe |
