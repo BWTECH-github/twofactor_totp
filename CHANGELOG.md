@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.0] - 2026-10-01
+
+Erste Version der Redesign-Linie (owncloud.online 11.1); 0.10.x bleibt die
+Linie für den bisherigen Kern.
+
+### Changed
+
+- Verwaltungsseite "TOTP zurücksetzen" neu gestaltet: deutsch übersetzt, Konten
+  als Tabelle mit Kästchen (Anzeigename, Konto, E-Mail, Status) statt eines
+  Mehrfachauswahlfelds mit allen Konten, standardmäßig nur Konten mit TOTP,
+  beschriftete entprellte Suche, seitenweises Laden (25 je Seite), Zähler
+  "n ausgewählt", Lade-, Leer- und Fehlerzustand, Meldungen über eine
+  Live-Region. "Ausgewählte zurücksetzen" fragt mit den Kontonamen nach, "Alle
+  zurücksetzen" steht abgesetzt in einem Gefahrenbereich und verlangt das
+  Bestätigungswort.
+- Der Status unterscheidet jetzt "TOTP eingerichtet" (bestätigter Schlüssel)
+  von "Einrichtung nicht abgeschlossen" (Schlüssel ohne Bestätigung, wie ihn
+  die Anmeldung bei verpflichtender Zwei-Faktor-Anmeldung anlegt).
+- `GET /admin/users` blättert (`limit` höchstens 100, `offset`, `onlyTotp`)
+  und liefert `hasMore`, `nextOffset`, `total`, `totpCount` sowie je Konto
+  `totpVerified`. Die Suche lädt nicht mehr alle Schlüssel samt Geheimnis,
+  sondern nur Kennung und Bestätigung. Endpunkte, Administratorpflicht und
+  CSRF-Schutz sind unverändert.
+
 ## [0.10.4] - 2026-09-26
 
 ### Fixed
