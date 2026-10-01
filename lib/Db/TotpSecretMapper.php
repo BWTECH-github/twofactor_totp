@@ -111,4 +111,51 @@ class TotpSecretMapper extends Mapper {
 			->execute()
 			->fetchAllAssociative();
 	}
+
+	/**
+	 * Whether the stored secret of each account is verified, ordered by
+	 * account ID. Reads neither the secret nor the last key.
+	 *
+	 * @param string[]|null $uids only these accounts; null for all accounts
+	 * @return array<string,bool> account ID => verified
+	 */
+	public function getSecretStatesByUserId(?array $uids = null): array {
+		if ($uids === []) {
+			return [];
+		}
+
+		$qb = $this->db->getQueryBuilder();
+		$qb->select('user_id', 'verified')
+			->from('twofactor_totp_secrets')
+			->orderBy('user_id');
+		if ($uids !== null) {
+			$qb->where($qb->expr()->in(
+				'user_id',
+				$qb->createNamedParameter(\array_values($uids), IQueryBuilder::PARAM_STR_ARRAY)
+			));
+		}
+
+		$result = $qb->execute();
+		$states = [];
+		while (($row = $result->fetchAssociative()) !== false) {
+			// Je nach Datenbank kommt die Spalte als bool, int oder Zeichenkette;
+			// Altbestände tragen NULL (siehe markUnverifiedSecretsAsVerified).
+			$states[(string)$row['user_id']] = \in_array($row['verified'], [true, 1, '1', 't', 'true'], true);
+		}
+		$result->free();
+		return $states;
+	}
+
+	/**
+	 * Number of accounts with a secret; user_id is unique, so one row per account.
+	 */
+	public function countUsersWithSecret(): int {
+		$qb = $this->db->getQueryBuilder();
+		$qb->select($qb->createFunction('COUNT(*)'))
+			->from('twofactor_totp_secrets');
+		$result = $qb->execute();
+		$count = (int)$result->fetchOne();
+		$result->free();
+		return $count;
+	}
 }

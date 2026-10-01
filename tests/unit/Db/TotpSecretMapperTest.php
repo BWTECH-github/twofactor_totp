@@ -132,4 +132,45 @@ class TotpSecretMapperTest extends TestCase {
 		// no secrets in the DB
 		$this->assertSame(0, $this->mapper->deleteAllSecrets());
 	}
+
+	public function testSecretStatesListEveryAccountWithItsVerificationSortedById() {
+		$this->mapper->insert(TotpSecret::fromParams([
+			'userId' => 'user2',
+			'secret' => 'test',
+			'verified' => true
+		]));
+		$this->mapper->insert(TotpSecret::fromParams([
+			'userId' => 'user0',
+			'secret' => 'test',
+			'verified' => false
+		]));
+
+		$states = $this->mapper->getSecretStatesByUserId();
+
+		$this->assertSame(['user0' => false, 'user1' => false, 'user2' => true], $states);
+	}
+
+	public function testSecretStatesCanBeRestrictedToGivenAccounts() {
+		$this->mapper->insert(TotpSecret::fromParams([
+			'userId' => 'user2',
+			'secret' => 'test',
+			'verified' => true
+		]));
+
+		$this->assertSame(['user2' => true], $this->mapper->getSecretStatesByUserId(['user2', 'nobody']));
+		// Ohne Konten keine Abfrage: ein leeres IN () wäre ungültiges SQL.
+		$this->assertSame([], $this->mapper->getSecretStatesByUserId([]));
+	}
+
+	public function testCountUsersWithSecretCountsEachAccountOnce() {
+		$this->assertSame(1, $this->mapper->countUsersWithSecret());
+
+		$this->mapper->insert(TotpSecret::fromParams([
+			'userId' => 'user2',
+			'secret' => 'test',
+			'verified' => true
+		]));
+
+		$this->assertSame(2, $this->mapper->countUsersWithSecret());
+	}
 }
