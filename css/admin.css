@@ -1,35 +1,385 @@
 /**
  * Modified by BW-Tech GmbH for owncloud.online PHP 8.4 compatibility.
+ *
+ * Redesign (1.0.0): Admin-Panel "TOTP zurücksetzen".
+ * - Farben, Schrift und Maße aus den owncloud.online-Tokens, mit Rückfallwerten
+ * - die Karte (.section), Felder, Kästchen, Knöpfe und Chips zeichnet der Kern;
+ *   hier stehen nur Anordnung, Tabelle und Gefahrenbereich
+ * - keine Übergänge: eine transition auf :hover verzögert die Rückmeldung
+ * - jedes Element, das hier ein display bekommt und per hidden ausgeblendet
+ *   wird, trägt die [hidden]-Gegenregel (Autorenregeln schlagen das hidden
+ *   des Browsers)
  */
-#twofactor-totp-admin .totp-admin-user-picker {
-	max-width: 1180px;
+
+#twofactor-totp-admin .totp-admin-intro {
+	max-width: 75ch;
+	color: var(--oco-text-secondary, #5b6675);
+	line-height: 1.5;
 }
 
-#twofactor-totp-admin label {
+/* --- Suche und Filter ----------------------------------------------------- */
+
+#twofactor-totp-admin .totp-admin-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: var(--oco-space-3, 12px) var(--oco-space-6, 24px);
+	margin: var(--oco-space-4, 16px) 0 var(--oco-space-3, 12px);
+}
+
+/* Beschriftung über dem Feld über die Spalte am Behälter: der Kern macht
+   jedes label der Einstellungen zu inline-flex (Trefferfläche 24 px). */
+#twofactor-totp-admin .totp-admin-search {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	flex: 1 1 320px;
+	max-width: 440px;
+}
+
+#twofactor-totp-admin .totp-admin-search label,
+#twofactor-totp-admin .totp-admin-confirm-all > label {
+	font: 500 12px/1.35 var(--oco-font-text, system-ui, sans-serif);
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+#twofactor-totp-admin #totp-admin-search {
+	width: 100%;
+	margin: 0;
+}
+
+/* Gleiche Höhe wie das Suchfeld, damit Kästchen und Feld auf einer Linie stehen. */
+#twofactor-totp-admin .totp-admin-filter {
+	display: flex;
+	align-items: center;
+	min-height: 40px;
+}
+
+/* --- Tabelle ---------------------------------------------------------------- */
+
+/* Rollbereich als letzte Sicherung, falls ein einzelner Wert breiter ist als
+   die Karte; die Seite selbst rollt nie. Behälterabfrage statt Medienabfrage:
+   die Spalte der Einstellungen ist je nach Seitenleiste verschieden breit. */
+#twofactor-totp-admin .totp-admin-list {
+	max-width: 100%;
+	overflow-x: auto;
+	container-type: inline-size;
+}
+
+#twofactor-totp-admin .totp-admin-list[aria-busy="true"] tbody {
+	opacity: .6;
+}
+
+/* white-space: normal gegen "table { white-space: nowrap }" aus den alten
+   Kernstilen: das erbten alle Zellen, ein langer Name schob die Tabelle bei
+   1440 px auf 1528 px Breite und schnitt die Statusspalte ab. */
+#twofactor-totp-admin .totp-admin-table {
+	width: 100%;
+	border-collapse: collapse;
+	white-space: normal;
+}
+
+/* Ohne Zeilen keine Spaltenköpfe: der Zustandstext darunter sagt, warum. */
+#twofactor-totp-admin .totp-admin-table:has(> tbody:empty) {
+	display: none;
+}
+
+#twofactor-totp-admin .totp-admin-table th,
+#twofactor-totp-admin .totp-admin-table td {
+	padding: 0 var(--oco-space-3, 12px);
+	text-align: left;
+	vertical-align: middle;
+}
+
+#twofactor-totp-admin .totp-admin-table thead th {
+	height: 40px;
+	border-bottom: 1px solid var(--oco-border-inner, #eef1f5);
+	font: 500 11px/1.25 var(--oco-font-text, system-ui, sans-serif);
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+#twofactor-totp-admin .totp-admin-table tbody tr {
+	height: var(--oco-row-height, 52px);
+	/* Fokus nach "Weitere Konten laden" liegt auf der Zeile: Ring nach innen,
+	   sonst schneidet ihn der Rollbereich ab (Wert der zentralen Fokusregel). */
+	--_oco-fokus-abstand: -2px;
+}
+
+#twofactor-totp-admin .totp-admin-table tbody th,
+#twofactor-totp-admin .totp-admin-table tbody td {
+	padding-top: 8px;
+	padding-bottom: 8px;
+	border-bottom: 1px solid var(--oco-border, #e3e8ef);
+	font: 400 13px/1.35 var(--oco-font-text, system-ui, sans-serif);
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+#twofactor-totp-admin .totp-admin-table tbody tr:not(.totp-admin-row--locked) {
+	cursor: pointer;
+}
+
+#twofactor-totp-admin .totp-admin-table tbody tr:not(.totp-admin-row--locked):hover {
+	background: var(--oco-canvas, #f5f7fa);
+}
+
+#twofactor-totp-admin .totp-admin-table tbody tr.totp-admin-row--selected,
+#twofactor-totp-admin .totp-admin-table tbody tr.totp-admin-row--selected:hover {
+	background: var(--oco-teal-selected, #f2fcf9);
+}
+
+#twofactor-totp-admin .totp-admin-col-select {
+	width: 44px;
+}
+
+/* "Alle auswählen": in breiten Behältern nur für Vorleseprogramme (die Spalte
+   spricht für sich), in schmalen sichtbar. Eigene Regel statt .hidden-visually,
+   das die Einstellungen mit !important festnageln. */
+#twofactor-totp-admin .totp-admin-select-all-text {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* Der Kern färbt jede th der Einstellungstabellen grau (zwei Kennungen) -
+   der Name steht deshalb in einem eigenen span. */
+#twofactor-totp-admin .totp-admin-name {
+	font: 600 13px/1.3 var(--oco-font-ui, system-ui, sans-serif);
+	color: var(--oco-text-primary, #1f2733);
+}
+
+#twofactor-totp-admin .totp-admin-chip-disabled {
+	margin-left: var(--oco-space-2, 8px);
+	vertical-align: middle;
+}
+
+#twofactor-totp-admin .totp-admin-uid {
 	display: block;
-	margin-bottom: 6px;
+	font-size: 12px;
+	color: var(--oco-text-muted, #6a717c);
+}
+
+/* Kennungen und Adressen haben oft keine Leerzeichen; anywhere senkt auch
+   die Mindestbreite der Spalte, break-word täte das nicht. */
+#twofactor-totp-admin .totp-admin-col-name,
+#twofactor-totp-admin .totp-admin-col-account,
+#twofactor-totp-admin .totp-admin-col-mail {
+	overflow-wrap: anywhere;
+}
+
+#twofactor-totp-admin .totp-admin-col-status {
+	white-space: nowrap;
+}
+
+/* Begonnene, nie bestätigte Einrichtung (Pflicht-2FA legt sie an). */
+#twofactor-totp-admin .totp-admin-chip--pending {
+	background: var(--oco-notice-bg, #fff7e8);
+	color: var(--oco-notice-ink, #6b4d16);
+}
+
+#twofactor-totp-admin .totp-admin-state {
+	margin: var(--oco-space-3, 12px) 0 0;
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+#twofactor-totp-admin .totp-admin-state:empty {
+	display: none;
+}
+
+#twofactor-totp-admin .totp-admin-list-buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--oco-space-3, 12px);
+	margin-top: var(--oco-space-3, 12px);
+}
+
+/* Zwei Kennungen: die Knopfregel der Einstellungen trägt selbst zwei. */
+#app-content #twofactor-totp-admin .totp-admin-list-buttons:not(:has(> button:not([hidden]))),
+#app-content #twofactor-totp-admin .totp-admin-list-buttons > button[hidden] {
+	display: none;
+}
+
+/* --- Auswahl und Meldungen -------------------------------------------------- */
+
+#twofactor-totp-admin .totp-admin-actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--oco-space-3, 12px) var(--oco-space-4, 16px);
+	margin-top: var(--oco-space-5, 20px);
+}
+
+#twofactor-totp-admin .totp-admin-count {
+	font: 500 13px/1.35 var(--oco-font-text, system-ui, sans-serif);
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+#twofactor-totp-admin .totp-admin-message {
+	margin: var(--oco-space-3, 12px) 0 0;
+	color: var(--oco-text-primary, #1f2733);
+}
+
+#twofactor-totp-admin .totp-admin-message:empty {
+	display: none;
+}
+
+#twofactor-totp-admin .totp-admin-message--error {
+	color: var(--oco-danger-ink, #b23b3b);
 	font-weight: 600;
 }
 
-#twofactor-totp-admin #totp-admin-user-search {
-	width: 520px;
+/* --- Gefahrenbereich --------------------------------------------------------- */
+
+#twofactor-totp-admin .totp-admin-danger {
+	margin-top: var(--oco-space-6, 24px);
+	padding: var(--oco-space-4, 16px) 18px;
+	border: 1px solid var(--oco-danger-border, #e8cccc);
+	border-radius: var(--oco-radius-card, 12px);
+}
+
+#twofactor-totp-admin .totp-admin-danger h3 {
+	margin: 0 0 6px;
+	font: 600 14px/1.3 var(--oco-font-ui, system-ui, sans-serif);
+	color: var(--oco-danger-ink, #b23b3b);
+}
+
+#twofactor-totp-admin .totp-admin-danger p {
+	max-width: 75ch;
+	margin: 0 0 var(--oco-space-2, 8px);
+	color: var(--oco-text-secondary, #5b6675);
+	line-height: 1.5;
+}
+
+#twofactor-totp-admin .totp-admin-danger .totp-admin-danger-count {
+	margin-bottom: var(--oco-space-3, 12px);
+	font-weight: 600;
+	color: var(--oco-text-primary, #1f2733);
+}
+
+#twofactor-totp-admin .totp-admin-confirm-all {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: var(--oco-space-4, 16px);
+}
+
+#twofactor-totp-admin .totp-admin-confirm-all[hidden] {
+	display: none;
+}
+
+#twofactor-totp-admin .totp-admin-confirm-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--oco-space-2, 8px) var(--oco-space-3, 12px);
+}
+
+#twofactor-totp-admin #totp-admin-confirm-input {
+	width: 240px;
 	max-width: 100%;
+	margin: 0;
 }
 
-#twofactor-totp-admin #totp-admin-user-select {
-	width: 100%;
-	min-width: 520px;
-	max-width: 1100px;
-	height: 430px;
-	resize: vertical;
+/* Gesperrte Knöpfe bleiben fokussierbar (aria-disabled statt disabled), damit
+   Fokus und Vorlesen nicht ins Leere laufen; sie sehen nur gesperrt aus.
+
+   Den Hauptknopf färbt in Karten #body-settings.oco-shell #app-content
+   .section .oco-btn-primary (2-3-0) türkis; die Sperrfarben des Kerns hängen
+   dort nur an :disabled, die Regel für [aria-disabled] (0-2-0) verliert.
+   Gleiche Werte wie die Kernregel, mit drei Kennungen. */
+#body-settings #app-content #twofactor-totp-admin .oco-btn-primary[aria-disabled="true"],
+#body-settings #app-content #twofactor-totp-admin .oco-btn-primary[aria-disabled="true"]:hover {
+	background: var(--oco-inactive-bg, #f0f2f6);
+	border-color: var(--oco-inactive-bar, #b8c6da);
+	color: var(--oco-inactive-ink, #606c7b);
+	cursor: not-allowed;
 }
 
-#twofactor-totp-admin #totp-admin-reset-all-button {
-	margin-left: 8px;
+#twofactor-totp-admin .oco-btn-danger[aria-disabled="true"],
+#twofactor-totp-admin .oco-btn-danger[aria-disabled="true"]:hover {
+	background: var(--oco-surface, #fff);
+	opacity: .55;
+	cursor: not-allowed;
 }
 
-#twofactor-totp-admin #totp-admin-reset-message {
-	display: inline-block;
-	margin-left: 10px;
-	vertical-align: middle;
+/* --- Schmale Behälter: jede Zeile ein Block -----------------------------------
+ * Unter 600 px quetschte die Tabelle Konto und Adresse auf Buchstabenbreite,
+ * der Status lag außerhalb der Karte. Hier stehen Name, Konto, Adresse und
+ * Status untereinander neben dem Kästchen. Die Spaltenköpfe bleiben für
+ * Vorleseprogramme erhalten (nur optisch verborgen), "Alle auswählen" zeigt
+ * seine Beschriftung. Die ARIA-Rollen an Tabelle, Zeilen und Zellen setzen
+ * Vorlage und Skript, weil display hier die Tabellensemantik kosten kann. */
+@container (max-width: 600px) {
+	#twofactor-totp-admin .totp-admin-table,
+	#twofactor-totp-admin .totp-admin-table thead,
+	#twofactor-totp-admin .totp-admin-table tbody {
+		display: block;
+	}
+
+	#twofactor-totp-admin .totp-admin-table thead tr {
+		display: flex;
+		align-items: center;
+		border-bottom: 1px solid var(--oco-border-inner, #eef1f5);
+	}
+
+	#twofactor-totp-admin .totp-admin-table thead th:not(.totp-admin-col-select) {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	#twofactor-totp-admin .totp-admin-table thead th.totp-admin-col-select {
+		width: auto;
+		height: auto;
+		padding: 8px 4px;
+		border: 0;
+		font: 500 13px/1.35 var(--oco-font-text, system-ui, sans-serif);
+		letter-spacing: normal;
+		text-transform: none;
+	}
+
+	#twofactor-totp-admin .totp-admin-select-all-text {
+		position: static;
+		width: auto;
+		height: auto;
+		overflow: visible;
+		clip-path: none;
+		white-space: normal;
+	}
+
+	#twofactor-totp-admin .totp-admin-table tbody tr {
+		display: grid;
+		grid-template-columns: 40px minmax(0, 1fr);
+		row-gap: 2px;
+		height: auto;
+		padding: 10px 0;
+		border-bottom: 1px solid var(--oco-border, #e3e8ef);
+	}
+
+	#twofactor-totp-admin .totp-admin-table tbody th,
+	#twofactor-totp-admin .totp-admin-table tbody td {
+		display: block;
+		grid-column: 2;
+		padding: 0 8px 0 0;
+		border: 0;
+	}
+
+	#twofactor-totp-admin .totp-admin-table tbody .totp-admin-col-select {
+		grid-column: 1;
+		grid-row: 1 / span 4;
+		width: auto;
+		padding: 0 0 0 4px;
+	}
+
+	#twofactor-totp-admin .totp-admin-table tbody .totp-admin-col-status {
+		margin-top: 4px;
+	}
 }
