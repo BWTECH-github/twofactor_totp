@@ -9,7 +9,7 @@
     "Not verified" : "Nicht bestätigt",
     "Time-based One-time Password" : "Zeitgesteuertes Einmalpasswort",
     "Authenticate with a TOTP app" : "Mit einer TOTP-App (zeitgesteuertes Einmalpasswort) authentifizieren",
-    "Scan the QR code below with your TOTP app and enter the code" : "Scannen Sie den QR-Code unten mit Ihrer TOTP-App und geben Sie den Code ein.",
+    "Scan the QR code below with your TOTP app and enter the code" : "Scanne den QR-Code unten mit deiner TOTP-App und gib den Code ein.",
     "TOTP Second-factor Auth" : "TOTP-Zweifaktorauthentifizierung",
     "RESET" : "ZURÜCKSETZEN",
     "Reset two-factor sign-in (TOTP)" : "Zwei-Faktor-Anmeldung (TOTP) zurücksetzen",
@@ -60,6 +60,7 @@
     "_Currently affects %n account._::_Currently affects %n accounts._" : ["Betrifft derzeit %n Konto.","Betrifft derzeit %n Konten."],
     "Resetting all TOTP setups …" : "Alle TOTP-Einrichtungen werden zurückgesetzt …",
     "All TOTP setups have been reset." : "Alle TOTP-Einrichtungen wurden zurückgesetzt.",
-    "TOTP setups could not be reset." : "Die TOTP-Einrichtungen konnten nicht zurückgesetzt werden."
+    "TOTP setups could not be reset." : "Die TOTP-Einrichtungen konnten nicht zurückgesetzt werden.",
+    "QR code for TOTP authenticator setup" : "QR-Code zur Einrichtung der TOTP-App"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
