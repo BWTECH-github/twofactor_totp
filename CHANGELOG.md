@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.2] - 2026-10-08
+
+### Behoben
+
+- TOTP einrichten: „Authentifizierungscode“ steht als sichtbare Beschriftung
+  über dem Feld statt als Platzhalter darin. Der Platzhalter war breiter als
+  das 130-px-Feld und verschwand beim Tippen.
+
 ## [1.0.1] - 2026-10-07
 
 ### Fixed
