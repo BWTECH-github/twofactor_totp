@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- Anrede (de_DE): „Zur Aktivierung des zweiten Faktors, bestätige den Authentifizierungscode unten.“ stand im Sie-Katalog in Du-Form; jetzt „Bestätigen Sie zur Aktivierung des zweiten Faktors den Authentifizierungscode unten.“
 - Sprache: Der Alternativtext des QR-Codes („QR code for TOTP authenticator setup“, Einrichtung in den persönlichen Einstellungen und bei der erzwungenen Einrichtung nach der Anmeldung) fehlte in allen deutschen Katalogen; Sprachausgabe und Ersatztext waren englisch.
 - Anrede: de_CH mischte Du und Sie; „Scanne den QR-Code unten …“ duzt jetzt wie die übrigen Texte. de_AT bleibt durchgehend beim Sie seiner Community-Übersetzung.
 
