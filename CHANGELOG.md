@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.1] - 2026-10-07
+
+### Fixed
+
+- Anrede (de_DE): „Zur Aktivierung des zweiten Faktors, bestätige den Authentifizierungscode unten.“ stand im Sie-Katalog in Du-Form; jetzt „Bestätigen Sie zur Aktivierung des zweiten Faktors den Authentifizierungscode unten.“
+- Anrede (de_AT): Derselbe Satz stand im sonst siezenden Katalog de_AT in Du-Form – im Einrichtungsdialog standen „Scannen Sie …“ und „bestätige …“ untereinander. Jetzt auch dort „Bestätigen Sie …“.
+- Sprache: Der Alternativtext des QR-Codes („QR code for TOTP authenticator setup“, Einrichtung in den persönlichen Einstellungen und bei der erzwungenen Einrichtung nach der Anmeldung) fehlte in allen deutschen Katalogen; Sprachausgabe und Ersatztext waren englisch.
+- Anrede: de_CH mischte Du und Sie; „Scanne den QR-Code unten …“ duzt jetzt wie die übrigen Texte. de_AT bleibt durchgehend beim Sie seiner Community-Übersetzung.
+
 ## [1.0.0] - 2026-10-01
 
 Erste Version der Redesign-Linie (owncloud.online 11.1); 0.10.x bleibt die
