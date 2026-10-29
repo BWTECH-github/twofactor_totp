@@ -1,0 +1,71 @@
+/*
+ * Persoenliche Einstellungen, Karte "TOTP": Einrichtung mit QR-Code.
+ * Beschriftung ueber dem Codefeld: der Kern macht jedes Label der
+ * Einstellungen inline-flex (zwei Kennungen) - es klebte links am Feld.
+ * Die Spalte haengt deshalb am Formular.
+ */
+
+#twofactor-totp-settings .totp-toggle {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--oco-space-2, 8px) var(--oco-space-3, 12px);
+}
+
+#twofactor-totp-settings .totp-setup {
+	margin-top: var(--oco-space-4, 16px);
+}
+
+#twofactor-totp-settings .totp-setup p {
+	margin: 0 0 var(--oco-space-2, 8px);
+	max-width: 60ch;
+	color: var(--oco-text-secondary, #5b6675);
+	line-height: 1.5;
+}
+
+/* Base32 ohne Leerzeichen: bricht in schmalen Karten um statt zu ragen */
+#twofactor-totp-settings .totp-secret code {
+	font: 500 13px/1.5 var(--oco-font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+	color: var(--oco-text-primary, #1f2733);
+	overflow-wrap: anywhere;
+	user-select: all;
+}
+
+#twofactor-totp-settings .totp-qr {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 0 0 var(--oco-space-3, 12px);
+	/* Ruhezone des QR-Codes auch auf getoentem Grund */
+	background: #fff;
+}
+
+#twofactor-totp-settings .totp-verify {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin: 0;
+}
+
+#twofactor-totp-settings .totp-challenge-label {
+	font: 500 12px/1.35 var(--oco-font-text, system-ui, sans-serif);
+	color: var(--oco-text-secondary, #5b6675);
+}
+
+#twofactor-totp-settings .totp-verify-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--oco-space-2, 8px) var(--oco-space-3, 12px);
+}
+
+#twofactor-totp-settings #totp-challenge {
+	width: 140px;
+	max-width: 100%;
+	margin: 0;
+	letter-spacing: .12em;
+}
+
+#twofactor-totp-settings #totp-verify-secret {
+	margin: 0;
+}

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.3] - 2026-10-29
+
+### Behoben
+
+- Persönliche Einstellungen: Beschriftung über dem Codefeld, Enter
+  bestätigt den Code, nach der Bestätigung schließt sich die Einrichtung
+  und die Karte meldet den Erfolg; der Fokus springt beim Einschalten in
+  das Codefeld.
+- Anmeldung: sichtbare Beschriftung des Codefelds; „Anmelden abbrechen“
+  ist auf der weißen Karte lesbar und groß genug zum Antippen.
+
 ## [1.0.2] - 2026-10-08
 
 ### Behoben

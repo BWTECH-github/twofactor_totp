@@ -4,6 +4,7 @@
  */
 
 script('core', 'login');
+style('twofactor_totp', 'challenge');
 ?>
 
 <?php if(!$_['isConfigured']): ?>
@@ -18,7 +19,7 @@ script('core', 'login');
 <?php endif; ?>
 <form method="POST" name="login">
 	<div class="grouptop">
-		<label for="challenge" class="hidden-visually"><?php p($l->t('Authentication code')); ?></label>
+		<label for="challenge" class="totp-challenge-label"><?php p($l->t('Authentication code')); ?></label>
 		<input type="text" id="challenge" name="challenge" required="required" autofocus autocomplete="off" autocapitalize="off">
 	</div>
     <div class="submit-wrap">

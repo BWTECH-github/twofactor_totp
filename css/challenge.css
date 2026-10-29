@@ -1,0 +1,31 @@
+/*
+ * Code-Abfrage bei der Anmeldung (Kernseite, Inhalt aus templates/challenge.php).
+ *
+ * "Anmeldung abbrechen" (a.two-factor-cancel) faerbt der Kern weiss
+ * (core/css/styles.css, aus der Zeit des dunklen Anmeldehintergrunds) - auf
+ * der weissen Karte des Redesigns unsichtbar und mit 15 px Hoehe unter der
+ * Mindestgroesse fuer Bedienelemente. Gestaltet wie "Passwort vergessen?"
+ * der Anmeldeseite. Gehoert eigentlich in den Kern (gemeldet); bis dahin
+ * hier, weil die Seite mit TOTP die einzige ist, die Kunden sehen.
+ */
+#body-login .v-align a.two-factor-cancel {
+	display: block;
+	width: fit-content;
+	margin: 12px auto 0;
+	padding: 6px 8px;
+	border-radius: 8px;
+	color: var(--oco-teal-ink, #00806b);
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+#body-login .v-align a.two-factor-cancel:hover {
+	background: rgba(0, 228, 189, .12);
+	text-decoration: underline;
+}
+
+#body-login .v-align a.two-factor-cancel:focus-visible {
+	outline: 2px solid var(--oco-focus-color, #00584a);
+	outline-offset: 2px;
+}

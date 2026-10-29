@@ -6,24 +6,27 @@
     OC.Settings = OC.Settings || {};
     OC.Settings.TwoFactorTotp = OC.Settings.TwoFactorTotp || {};
 
-    var TEMPLATE = '<div>'
+    // Einrichtung als Formular: Enter im Codefeld bestaetigt wie der Knopf.
+    // Beschriftung ueber dem Feld (css/personal.css), Schluessel als Code.
+    var TEMPLATE = '<div class="totp-toggle">'
         + '    <input type="checkbox" class="checkbox" id="totp-enabled">'
         + '    <label for="totp-enabled">' + t('twofactor_totp', 'Activate TOTP') + '</label>'
+        + '    <span id="totp-state-msg" class="msg" role="status" aria-live="polite"></span>'
         + '</div>'
         + '{{#if secret}}'
-        + '<div>'
-        + '    <span>' + t('twofactor_totp', 'This is your new TOTP secret:') + ' {{secret}}</span>'
-        + '</div>'
-        + '<div>'
-        + '    <span>' + t('twofactor_totp', 'Scan this QR code with your TOTP app') + '</span><br>'
-        + '    <img src="{{qr}}" alt="' + t('twofactor_totp', 'QR code for TOTP authenticator setup') + '">'
-        + '</div>'
-        + '<div>'
-        + '	   <span>' + t('twofactor_totp', 'To enable second-factor verify authentication code below.') + '</span><br>'
-        + '	   <label for="totp-challenge" class="totp-challenge-label">' + t('twofactor_totp', 'Authentication code') + '</label>'
-        + '	   <input type="text" id="totp-challenge" required="required" inputmode="numeric" pattern="[0-9]*" minlength="6" maxlength="6" autocomplete="off">'
-        + '	   <button id="totp-verify-secret" class="button">' + t('twofactor_totp', 'Verify') + '</button>'
-        + '	   <span id="totp-verify-msg" class="msg"></span>'
+        + '<div class="totp-setup">'
+        + '    <p class="totp-secret">' + t('twofactor_totp', 'This is your new TOTP secret:') + ' <code>{{secret}}</code></p>'
+        + '    <p>' + t('twofactor_totp', 'Scan this QR code with your TOTP app') + '</p>'
+        + '    <img class="totp-qr" src="{{qr}}" alt="' + t('twofactor_totp', 'QR code for TOTP authenticator setup') + '">'
+        + '    <p>' + t('twofactor_totp', 'To enable second-factor verify authentication code below.') + '</p>'
+        + '    <form class="totp-verify" novalidate>'
+        + '        <label for="totp-challenge" class="totp-challenge-label">' + t('twofactor_totp', 'Authentication code') + '</label>'
+        + '        <div class="totp-verify-row">'
+        + '            <input type="text" id="totp-challenge" required="required" inputmode="numeric" pattern="[0-9]*" minlength="6" maxlength="6" autocomplete="one-time-code">'
+        + '            <button id="totp-verify-secret" type="submit" class="oco-btn-primary">' + t('twofactor_totp', 'Verify') + '</button>'
+        + '            <span id="totp-verify-msg" class="msg" role="status" aria-live="polite"></span>'
+        + '        </div>'
+        + '    </form>'
         + '</div>'
         + '{{/if}}';
 
@@ -33,7 +36,7 @@
         _enabled: undefined,
         events: {
             'change #totp-enabled': '_onToggleEnabled',
-            'click #totp-verify-secret': '_clickVerifySecret'
+            'submit .totp-verify': '_onSubmitVerify'
         },
         initialize: function () {
             this._load();
@@ -52,7 +55,7 @@
             var _this = this;
             $.when(loading).done(function (data) {
                 _this._enabled = data.enabled;
-                _this.$('#totp-enabled').attr('checked', data.enabled);
+                _this.$('#totp-enabled').prop('checked', !!data.enabled);
             });
             $.when(loading).always(function () {
                 _this._loading = false;
@@ -80,7 +83,10 @@
                 $.when(updating).done(function(data) {
                     _this._enabled = data.enabled;
                     _this._showQr(data);
-                    _this.$('#totp-enabled').attr('checked', data.enabled);
+                    _this.$('#totp-enabled').prop('checked', !!data.enabled);
+                    // Das Kaestchen wurde neu gezeichnet: der Fokus geht an das
+                    // Codefeld (Einrichtung) bzw. zurueck an das Kaestchen
+                    (data.secret ? _this.$('#totp-challenge') : _this.$('#totp-enabled')).trigger('focus');
                 });
                 $.when(updating).always(function () {
                     _this._loading = false;
@@ -88,8 +94,9 @@
                 this._enabled = enabled;
             }
         },
-        _clickVerifySecret: function () {
-            var challenge = this.$('#totp-challenge').val();
+        _onSubmitVerify: function (event) {
+            event.preventDefault();
+            var challenge = $.trim(this.$('#totp-challenge').val());
             var url = OC.generateUrl('/apps/twofactor_totp/settings/verifyNewSecret');
             var verifying = $.ajax(url, {
                 method: 'POST',
@@ -98,12 +105,20 @@
                 }
             });
 
+            var _this = this;
             $.when(verifying).done(function(data) {
                 if(data.verified) {
-                    OC.msg.finishedSuccess('#totp-verify-msg', t('twofactor_totp', 'Verified'));
+                    // Eingerichtet: QR-Code und Schluessel verschwinden, das
+                    // Kaestchen bleibt gesetzt und meldet den Erfolg
+                    _this.render({});
+                    _this.$('#totp-enabled').prop('checked', true).trigger('focus');
+                    OC.msg.finishedSuccess('#totp-state-msg', t('twofactor_totp', 'Verified'));
                 } else {
                     OC.msg.finishedError('#totp-verify-msg', t('twofactor_totp', 'Not verified'));
+                    _this.$('#totp-challenge').trigger('focus').trigger('select');
                 }
+            }).fail(function () {
+                OC.msg.finishedError('#totp-verify-msg', t('twofactor_totp', 'Not verified'));
             });
         },
         _showQr: function(data) {
