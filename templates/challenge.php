@@ -4,7 +4,6 @@
  */
 
 script('core', 'login');
-style('twofactor_totp', 'challenge');
 ?>
 
 <?php if(!$_['isConfigured']): ?>
