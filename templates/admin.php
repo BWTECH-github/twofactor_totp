@@ -49,7 +49,10 @@ $confirmWord = $l->t('RESET');
 			</thead>
 			<tbody role="rowgroup"></tbody>
 		</table>
-		<p id="totp-admin-state" class="totp-admin-state"></p>
+		<?php /* Ladezeile und Zählzeile stehen schon im ersten Bild: js/admin.js
+			füllt sie erst nach dem Laden, und jede kam als neue Zeile dazu
+			(Layout-Verschiebung 0,031 bei 1024 px). */ ?>
+		<p id="totp-admin-state" class="totp-admin-state"><?php p($l->t('Loading accounts …')); ?></p>
 		<div class="totp-admin-list-buttons">
 			<button type="button" class="totp-admin-more" hidden><?php p($l->t('Load more accounts')); ?></button>
 			<button type="button" class="totp-admin-retry" hidden><?php p($l->t('Try again')); ?></button>
@@ -67,7 +70,7 @@ $confirmWord = $l->t('RESET');
 	<div class="totp-admin-danger" role="group" aria-labelledby="totp-admin-danger-title">
 		<h3 id="totp-admin-danger-title"><?php p($l->t('Reset all TOTP setups')); ?></h3>
 		<p><?php p($l->t('Removes TOTP from all accounts at once. Only meant for emergencies, for example when the stored secrets may have been exposed.')); ?></p>
-		<p id="totp-admin-danger-count" class="totp-admin-danger-count"></p>
+		<p id="totp-admin-danger-count" class="totp-admin-danger-count">&nbsp;</p>
 		<button type="button" id="totp-admin-reset-all-start" class="oco-btn-danger"
 			aria-expanded="false" aria-controls="totp-admin-confirm-all"
 			aria-describedby="totp-admin-danger-count"><?php p($l->t('Reset all …')); ?></button>
