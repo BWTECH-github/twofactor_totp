@@ -22,7 +22,7 @@
         + '    <form class="totp-verify" novalidate>'
         + '        <label for="totp-challenge" class="totp-challenge-label">' + t('twofactor_totp', 'Authentication code') + '</label>'
         + '        <div class="totp-verify-row">'
-        + '            <input type="text" id="totp-challenge" required="required" inputmode="numeric" pattern="[0-9]*" minlength="6" maxlength="6" autocomplete="one-time-code">'
+        + '            <input type="text" id="totp-challenge" required="required" aria-describedby="totp-verify-msg" inputmode="numeric" pattern="[0-9]*" minlength="6" maxlength="6" autocomplete="one-time-code">'
         + '            <button id="totp-verify-secret" type="submit" class="oco-btn-primary">' + t('twofactor_totp', 'Verify') + '</button>'
         + '            <span id="totp-verify-msg" class="msg" role="status" aria-live="polite"></span>'
         + '        </div>'
@@ -115,7 +115,12 @@
                     OC.msg.finishedSuccess('#totp-state-msg', t('twofactor_totp', 'Verified'));
                 } else {
                     OC.msg.finishedError('#totp-verify-msg', t('twofactor_totp', 'Not verified'));
-                    _this.$('#totp-challenge').trigger('focus').trigger('select');
+                    // Das Feld gilt als ungueltig, bis neu getippt wird (WCAG 3.3.1)
+                    _this.$('#totp-challenge').attr('aria-invalid', 'true')
+                        .one('input', function() {
+                            $(this).removeAttr('aria-invalid');
+                        })
+                        .trigger('focus').trigger('select');
                 }
             }).fail(function () {
                 OC.msg.finishedError('#totp-verify-msg', t('twofactor_totp', 'Not verified'));

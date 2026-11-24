@@ -19,7 +19,9 @@ script('core', 'login');
 <form method="POST" name="login">
 	<div class="grouptop">
 		<label for="challenge" class="totp-challenge-label"><?php p($l->t('Authentication code')); ?></label>
-		<input type="text" id="challenge" name="challenge" required="required" autofocus autocomplete="off" autocapitalize="off">
+		<?php /* Ein Fehler des letzten Versuchs (#two-factor-error, Vorlage des Kerns) hängt
+		         am Feld und wird mit ihm angesagt; fehlt er, bleibt der Verweis ohne Wirkung. */ ?>
+		<input type="text" id="challenge" name="challenge" required="required" aria-describedby="two-factor-error" autofocus autocomplete="off" autocapitalize="off">
 	</div>
     <div class="submit-wrap">
         <button type="submit" id="submit" class="login-button">
