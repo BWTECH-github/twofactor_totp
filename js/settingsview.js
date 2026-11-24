@@ -114,7 +114,9 @@
                     _this.$('#totp-enabled').prop('checked', true).trigger('focus');
                     OC.msg.finishedSuccess('#totp-state-msg', t('twofactor_totp', 'Verified'));
                 } else {
-                    OC.msg.finishedError('#totp-verify-msg', t('twofactor_totp', 'Not verified'));
+                    // Die Meldung sagt, was zu tun ist (WCAG 3.3.3), statt nur
+                    // „Nicht bestätigt“ - meist war der Code schon abgelaufen.
+                    OC.msg.finishedError('#totp-verify-msg', t('twofactor_totp', 'The code is wrong or has expired. Enter the current code from your app.'));
                     // Das Feld gilt als ungueltig, bis neu getippt wird (WCAG 3.3.1)
                     _this.$('#totp-challenge').attr('aria-invalid', 'true')
                         .one('input', function() {

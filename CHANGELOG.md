@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
+## [1.0.7] - 2026-11-24
+
+### Behoben
+- Anmeldung: Nach einem falschen Code gilt das Codefeld als ungültig.
+- Einrichtung: Statt „Nicht bestätigt“ sagt die Meldung, dass der Code falsch oder abgelaufen ist und der aktuelle Code aus der App einzugeben ist.
+
 ## [1.0.6] - 2026-11-24
 
 ### Behoben

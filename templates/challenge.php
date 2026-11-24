@@ -20,8 +20,11 @@ script('core', 'login');
 	<div class="grouptop">
 		<label for="challenge" class="totp-challenge-label"><?php p($l->t('Authentication code')); ?></label>
 		<?php /* Ein Fehler des letzten Versuchs (#two-factor-error, Vorlage des Kerns) hängt
-		         am Feld und wird mit ihm angesagt; fehlt er, bleibt der Verweis ohne Wirkung. */ ?>
-		<input type="text" id="challenge" name="challenge" required="required" aria-describedby="two-factor-error" autofocus autocomplete="off" autocapitalize="off">
+		         am Feld und wird mit ihm angesagt; fehlt er, bleibt der Verweis ohne Wirkung.
+		         Nach einem Fehlversuch gilt das Feld als ungültig (WCAG 3.3.1): $_['error']
+		         reicht der Kern weiter (TwoFactorChallengeController::showChallenge); ein
+		         Kern ohne diese Angabe lässt das Feld einfach ohne aria-invalid. */ ?>
+		<input type="text" id="challenge" name="challenge" required="required" aria-describedby="two-factor-error"<?php if (!empty($_['error'])): ?> aria-invalid="true"<?php endif; ?> autofocus autocomplete="off" autocapitalize="off">
 	</div>
     <div class="submit-wrap">
         <button type="submit" id="submit" class="login-button">

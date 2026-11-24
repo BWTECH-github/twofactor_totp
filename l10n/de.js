@@ -9,6 +9,7 @@ OC.L10N.register(
     "Verify" : "Bestätigen",
     "Verified" : "Bestätigt",
     "Not verified" : "Nicht bestätigt",
+    "The code is wrong or has expired. Enter the current code from your app." : "Der Code ist falsch oder abgelaufen. Gib den aktuellen Code aus deiner App ein.",
     "Time-based One-time Password" : "Zeitgesteuertes Einmalpasswort",
     "Authenticate with a TOTP app" : "Mit einer TOTP-App (zeitgesteuertes Einmalpasswort) authentifizieren",
     "Scan the QR code below with your TOTP app and enter the code" : "Scanne den QR-Code unten mit deiner TOTP-App und gib den Code ein.",
